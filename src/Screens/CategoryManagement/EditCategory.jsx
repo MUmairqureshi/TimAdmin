@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { DashboardLayout } from "../../Components/Layout/DashboardLayout";
 import BackButton from "../../Components/BackButton";
 import CustomModal from "../../Components/CustomModal";
 import CustomInput from '../../Components/CustomInput';
 import { SelectBox } from "../../Components/CustomSelect";
+import { faClose, faMinusCircle, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+
 import CustomButton from "../../Components/CustomButton";
 export const EditCategory = () => {
     const { id } = useParams();
@@ -15,7 +18,7 @@ export const EditCategory = () => {
         image: '', // Initialize image as an empty string
     });
 
-
+    const base_url = 'https://custom2.mystagingserver.site/food-stadium/public/'
 
     const fetchCategoryData = () => {
         const LogoutData = localStorage.getItem('login');
@@ -68,17 +71,46 @@ export const EditCategory = () => {
         console.log(formData)
     };
 
+
+
+
+
+
+
+    // const filehandleChange = (event) => {
+    //     const file = event.target.files[0];
+    //     // console.log(file.name)
+    //     if (file) {
+    //         const fileName = file;
+    //         setFormData((prevData) => ({
+    //             ...prevData,
+    //             image: fileName,
+    //         }));
+    //     }
+    //     console.log(formData)
+    // };
+
+
     const filehandleChange = (event) => {
         const file = event.target.files[0];
-        // console.log(file.name)
-        if (file) {
-            const fileName = file;
-            setFormData((prevData) => ({
-                ...prevData,
-                image: fileName,
-            }));
-        }
-        console.log(formData)
+
+        // if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const imageDataUrl = e.target.result;
+
+            setFormData((prevData) => {
+                return {
+                    ...prevData,
+                    image: file,
+                }
+            });
+        };
+
+        // Read the selected image file as a data URL
+        reader.readAsDataURL(file);
+        // }
     };
 
 
@@ -122,8 +154,21 @@ export const EditCategory = () => {
     };
 
 
+    const handleRemove = (imageid) => {
+        const indeximage = formData?.product_images.findIndex((item) => item.id === imageid)
+        if (indeximage !== -1) {
+            setFormData((prevFormData) => {
+                const productimage = [...prevFormData.product_images.slice(0, indeximage), ...prevFormData.product_images.slice(indeximage + 1)];
+                return {
+                    ...prevFormData,
+                    product_images: productimage
+                }
 
+            })
+        }
+    }
 
+    console.log("formData", formData)
     return (
         <>
             <DashboardLayout>
@@ -183,7 +228,35 @@ export const EditCategory = () => {
                                                     // value={formData.image}
                                                     onChange={filehandleChange}
                                                 />
+
+                                                {/* <div className="galleryBox row">
+                                                    <div className="galleryItem col-md-3 mb-3 position-relative" key={formData.id}>
+                                                        <img src={base_url + formData.image} alt={`Product Image ${formData.id}`} />
+
+
+                                                        <div className="removeImage" onClick={() => handleRemove(formData.id)}>
+                                                            <button type="button">
+                                                                <FontAwesomeIcon icon={faClose}></FontAwesomeIcon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div> */}
+                                                <div className="galleryBox row">
+                                                    <div className="galleryItem col-md-3 mb-3 position-relative" key={formData.id}>
+                                                        {formData.image && (
+                                                            <img src={base_url + formData.image} alt={`Product Image ${formData.id}`} />
+                                                        )}
+
+                                                        <div className="removeImage" onClick={() => handleRemove(formData.id)}>
+                                                            <button type="button">
+                                                                <FontAwesomeIcon icon={faClose}></FontAwesomeIcon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
+
                                             <div className="col-md-12">
                                                 <CustomButton variant='primaryButton' text='Submit' type='submit' />
                                             </div>
