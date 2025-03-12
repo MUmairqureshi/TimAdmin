@@ -1,0 +1,34 @@
+
+
+  const [multiopction, setMultiopction] = useState([]);
+
+  const options = [
+    { value: "chocolate", label: "Chocolate" },
+    { value: "strawberry", label: "Strawberry" },
+    { value: "vanilla", label: "Vanilla" },
+  ];
+
+  const options1 = [{ value: "chocolate", label: "Chocolate" }];
+
+  useEffect(() => {
+    setMultiopction(options1);
+  }, []);
+
+  const handleChangeopt = (selectedOptions) => {
+    setMultiopction(selectedOptions || []);
+  };
+
+
+
+
+
+
+    <Select
+                      onChange={handleChangeopt}
+                      value={multiopction}
+                      name="multibox"
+                      isMulti
+                      options={options}
+                      className="basic-multi-select"
+                      classNamePrefix="select"
+                    />
